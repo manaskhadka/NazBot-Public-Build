@@ -1,0 +1,5 @@
+This text file contained urls for various pictures, one url per line.
+
+EXAMPLE:
+www.pictures.bank/pic1.jpg
+www.pictures.bank/pic2.jpg

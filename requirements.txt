@@ -1,0 +1,4 @@
+discord.py==1.4.1
+requests==2.25.0
+discord==1.0.1
+python-dotenv==0.15.0

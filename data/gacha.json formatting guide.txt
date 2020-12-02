@@ -1,0 +1,9 @@
+This is a guide for how to format the gacha.json library
+A gacha game is one in which a player uses some form of currency and is given a random collectible
+
+The library is formatted as a dict with key:list pairs:
+
+"identification_number": ["name", rarity number, "description", "ability (flavor text)", "url for pic" ]
+
+the rarity numbers are ints that can range from 0-5 and 10.
+Generally, there should be fewer collectibles at higher rarities.

@@ -1,0 +1,5 @@
+This text file contained captions for the pictures in pictures.txt, one caption per line
+
+EXAMPLE:
+at the park
+sunset with friends
