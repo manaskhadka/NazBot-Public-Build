@@ -1,1 +1,1 @@
-worker: python NazBot.py
+worker: python DiscordBot.py
