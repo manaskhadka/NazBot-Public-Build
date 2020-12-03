@@ -372,7 +372,7 @@ async def weather(ctx, *, city_name):
     response.add_field(name="Wind Speed: ", value=f'{wind_speed_mph} mph')
     response.add_field(name="Description", value=weather_descript)
     response.set_thumbnail(url=icon)
-    response.set_footer(text=f'{city}, {country}')
+    response.set_footer(text=f'{city}, {country}\nSource: openweathermap.org')
 
     await ctx.send(embed=response)
 
