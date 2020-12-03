@@ -279,20 +279,6 @@ async def oh(ctx):
     await ctx.send(embed=response)
 
 
-# returns a halloween themed picture
-# removed: halloween is over
-"""
-with open('data/spook.json') as file:
-    dootlist = json.load(file)
-
-
-@client.command(name='doot')
-async def doot(ctx):
-    picture = random.choice(dootlist)
-    await ctx.send(picture)
-"""
-
-
 # very similar to PRIVATE_COMMAND_1 but instead utilizes .txt files instead of .json
 @client.command(name=PRIVATE_COMMAND_2)
 @commands.check(is_it_me)
