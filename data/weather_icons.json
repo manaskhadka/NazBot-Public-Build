@@ -1,0 +1,17 @@
+{
+  "night": {
+             "clear": "https://cdn.discordapp.com/attachments/763613331017039912/783848760199086130/night_clear.png",
+             "clouds": "https://cdn.discordapp.com/attachments/763613331017039912/783848762303971378/night_cloudy.png",
+             "rain": "https://cdn.discordapp.com/attachments/763613331017039912/783848764057452574/night_rain.png",
+             "snow": "https://cdn.discordapp.com/attachments/763613331017039912/783848765743300629/night_snow.png"
+           },
+
+  "day":   {
+             "clear": "https://cdn.discordapp.com/attachments/763613331017039912/783848748534202398/day_clear.png",
+             "clouds": "https://cdn.discordapp.com/attachments/763613331017039912/783848753089347594/day_cloudy.png",
+             "rain": "https://cdn.discordapp.com/attachments/763613331017039912/783848754784501770/day_rain.png",
+             "snow": "https://cdn.discordapp.com/attachments/763613331017039912/783848757053358080/day_snow.png"
+           },
+
+  "foggy": "https://cdn.discordapp.com/attachments/763613331017039912/783848758810247218/foggy.png"
+}

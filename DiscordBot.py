@@ -7,12 +7,15 @@ import os
 import random
 import json
 import asyncio
+import requests
+import datetime
 from dotenv import load_dotenv
 
 # initializing environment variables (sensitive information)
 # env variables taken from either a .env file or from github/heroku secret keys
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+WEATHER_KEY = os.getenv('WEATHER_KEY')
 PRIVATE_COMMAND_1 = os.getenv('PRIVATE_ONE')
 PRIVATE_COMMAND_2 = os.getenv('PRIVATE_TWO')
 
@@ -42,6 +45,7 @@ async def help(ctx):
     response.add_field(name="gacha_info", value="shows stats about the gacha command", inline=False)
     response.add_field(name="doot", value="dispenses doots (HALLOWEEN SEASON ONLY)")
     response.add_field(name="jingle", value="dispenses holiday cheer (CHRISTMAS SEASON ONLY)")
+    response.add_field(name="/weather + city", value="shows current weather info at a city", inline=False)
     response.set_footer(text='''
     --------------------------------------------------------------------------\n
     if you have ideas/pics to add, just let me know!
@@ -311,6 +315,66 @@ async def nom(ctx):
 
     await ctx.send(pic)
     await ctx.send(quote)
+
+
+@client.command(name='weather')
+async def weather(ctx, *, city_name):
+    my_request = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={WEATHER_KEY}&units=imperial"
+    library = requests.get(my_request).json()
+
+    current_temp = library['main']['temp']
+    feels_like = library['main']['feels_like']
+    daily_min = library['main']['temp_min']
+    daily_max = library['main']['temp_max']
+    humidity_percentage = library['main']['humidity']
+    main_weather = library['weather'][0]['main']
+    weather_descript = library['weather'][0]['description']
+    city = library['name']
+    country = library['sys']['country']
+    wind_speed_mph = library['wind']['speed']
+
+    # debug tool: print(f'{city}: {library}')
+
+    time_unix = int(library['dt'])
+    sunrise_time = int(library['sys']['sunrise'])
+    sunset_time = int(library['sys']['sunset'])
+
+    # determining what weather icon will be used
+    if sunrise_time < time_unix < sunset_time:
+        embed_color = discord.Color.orange()
+        mode = 'day'
+    else:
+        embed_color = discord.Color.blurple()
+        mode = 'night'
+
+    other_weather_bank = ['mist', 'fog']
+
+    with open('data/weather_icons.json', 'r') as file:
+        weather_icons = json.load(file)
+
+    if main_weather.lower() in other_weather_bank:
+        icon = weather_icons['foggy']
+    else:
+        icon = weather_icons[mode][main_weather.lower()]
+
+    # determining local time
+    time_diff_UTC = int(library['timezone'])
+    local_time_unix = time_unix + time_diff_UTC
+    local_time_formatted = datetime.utcfromtimestamp(local_time_unix).strftime('%H:%M')
+
+    response = discord.Embed(title=f"Forecast: {main_weather}", color=embed_color)
+    response.set_author(name=f'Weather Report: {city} at {local_time_formatted}')
+    response.add_field(name="Temperature (Fahrenheit): ", value=f"It is currently {current_temp} degrees", inline=False)
+    response.add_field(name="Today's Min: ", value=f'{daily_min} degrees')
+    response.add_field(name="Today's Max: ", value=f'{daily_max} degrees')
+    response.add_field(name="Feels Like: ", value=f'{feels_like} degrees')
+    response.add_field(name="Humidity: ", value=str(humidity_percentage)+"%")
+    response.add_field(name="Wind Speed: ", value=f'{wind_speed_mph} mph')
+    response.add_field(name="Description", value=weather_descript)
+    response.set_thumbnail(url=icon)
+    response.set_footer(text=f'{city}, {country}')
+
+    await ctx.send(embed=response)
 
 # runs the bot using the bot specific token
 client.run(TOKEN)
