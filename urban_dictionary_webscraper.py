@@ -162,7 +162,7 @@ def phrase_cleaner(phrase):
         bad_phrase = phrase_locator_inclusive(phrase, starting_point, ending_point)
         phrase = phrase.replace(bad_phrase, "")
 
-    placeholders = {'&apos;': "'", '&quot;': '"'}
+    placeholders = {'&apos;': "'", '&quot;': '"', '&lt;': '<', '&rt;': '>'}
 
     for placeholder in placeholders.keys():
         while placeholder in phrase:
