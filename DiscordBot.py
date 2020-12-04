@@ -10,6 +10,7 @@ import asyncio
 import requests
 import datetime
 from dotenv import load_dotenv
+import urban_dictionary_webscraper
 
 # initializing environment variables (sensitive information)
 # env variables taken from either a .env file or from github/heroku secret keys
@@ -46,6 +47,7 @@ async def help(ctx):
     response.add_field(name="doot", value="dispenses doots (HALLOWEEN SEASON ONLY)")
     response.add_field(name="jingle", value="dispenses holiday cheer (CHRISTMAS SEASON ONLY)")
     response.add_field(name="/weather + city", value="shows current weather info at a city", inline=False)
+    response.add_field(name="/urbandict + search", value="displays the most popular result from urbandictionary.com", inline=False)
     response.set_footer(text='''
     --------------------------------------------------------------------------\n
     if you have ideas/pics to add, just let me know!
@@ -348,19 +350,36 @@ async def weather(ctx, *, city_name):
     local_time_unix = time_unix + time_diff_UTC
     local_time_formatted = datetime.utcfromtimestamp(local_time_unix).strftime('%H:%M')
 
-    response = discord.Embed(title=f"Forecast: {main_weather}", color=embed_color)
+    response = discord.Embed(title=f"**Forecast: {main_weather}**", color=embed_color)
     response.set_author(name=f'Weather Report: {city} at {local_time_formatted}')
     response.add_field(name="Temperature (Fahrenheit): ", value=f"It is currently {current_temp} degrees", inline=False)
-    response.add_field(name="Today's Min: ", value=f'{daily_min} degrees')
-    response.add_field(name="Today's Max: ", value=f'{daily_max} degrees')
-    response.add_field(name="Feels Like: ", value=f'{feels_like} degrees')
-    response.add_field(name="Humidity: ", value=str(humidity_percentage)+"%")
-    response.add_field(name="Wind Speed: ", value=f'{wind_speed_mph} mph')
-    response.add_field(name="Description", value=weather_descript)
+    response.add_field(name="__Today's Min__", value=f'{daily_min} degrees')
+    response.add_field(name="__Today's Max__", value=f'{daily_max} degrees')
+    response.add_field(name="__Feels Like:__", value=f'{feels_like} degrees')
+    response.add_field(name="__Humidity__", value=str(humidity_percentage)+"%")
+    response.add_field(name="__Wind Speed__", value=f'{wind_speed_mph} mph')
+    response.add_field(name="__Description__", value=weather_descript)
     response.set_thumbnail(url=icon)
     response.set_footer(text=f'{city}, {country}\nSource: openweathermap.org')
 
     await ctx.send(embed=response)
+
+
+@client.command(name="urbandict")
+async def urbandictionary(ctx, *, search_phrase):
+    thumbnail = 'https://cdn.discordapp.com/attachments/763613331017039912/784209484758384690/unknown.png'
+    library = urban_dictionary_webscraper.urbandict(search_phrase)
+    if library == -1:
+        await ctx.send("Sorry, your search is invalid")
+
+    else:
+        response = discord.Embed(title=f'Top Definition: {library["title"].title()}', color=discord.Color.dark_gold())
+        response.add_field(name="Definition: ", value=f'{library["definition"]}', inline=False)
+        response.add_field(name="Example: ", value=f'*{library["example"]}*', inline=False)
+        response.set_footer(text=f'By {library["author"]} on {library["date"]}\nUpvotes: {library["likes"]} | Downvotes: {library["dislikes"]}\nSource: urbandictionary.com')
+        response.set_thumbnail(url=thumbnail)
+
+        await ctx.send(embed=response)
 
 # runs the bot using the bot specific token
 client.run(TOKEN)
